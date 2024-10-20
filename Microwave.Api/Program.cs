@@ -1,13 +1,24 @@
-using Microwave.Api.Common.Endpoints;
+using Microsoft.EntityFrameworkCore;
+
+using Microwave.Api.Data;
+using Microwave.Api.Endpoints;
 using Microwave.Api.Handlers;
 using Microwave.Core.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
+string connString = builder.Configuration.GetConnectionString("Default") ?? string.Empty;
+
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(x => x.CustomSchemaIds(type => type.FullName));
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<AppDbContext>(x =>
+{
+    x.UseSqlServer(connString);
+});
 
 builder.Services.AddTransient<IExecutionHandler, ExecutionHandler>();
+builder.Services.AddTransient<IPredefinedProgramHandler, PredefinedProgramHandler>();
 
 var app = builder.Build();
 
@@ -16,11 +27,7 @@ app.UseSwaggerUI();
 
 app.MapEndpoints();
 
-app.MapGet("/", () => new { message = "OK" }).WithOrder(999);
-
-// app.MapGet("/v1/", () => "Hello World!");
-
-// Get -> PredefinedProgram -> Pego os padrões e os salvos => IList<PredefinedProgram>
-// Post -> PredefinedProgram -> Request => PredefinedProgram
+app.MapGet("/", () => new { message = "OK" })
+    .WithOrder(999);
 
 app.Run();

@@ -3,13 +3,14 @@ using Microwave.Core.Handlers;
 using Microwave.Core.Responses;
 using Microwave.Core.Responses.Execution;
 
-namespace Microwave.Api.Common.Endpoints.Execution;
+namespace Microwave.Api.Endpoints.Execution;
 
 public class GetExecutionStatusEndpoint : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder app)
         => app.MapGet("get-execution-status", Handle)
             .WithName("GetExecutionStatus")
+            .WithSummary("Gets the current status of the execution (Heating)")
             .WithOrder(3)
             .Produces<BaseResponse<ExecutionStatusResponse>>()
             .Produces(StatusCodes.Status404NotFound);

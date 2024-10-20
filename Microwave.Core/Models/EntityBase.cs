@@ -9,7 +9,7 @@ public abstract class EntityBase
         UpdatedAt = DateTime.UtcNow;
     }
 
-    public Guid Id { get; set; }
-    public DateTime CreatedAt { get; }
+    public Guid Id { get; private set; }
+    public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
 }

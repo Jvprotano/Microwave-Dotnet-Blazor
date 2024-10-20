@@ -46,7 +46,7 @@ public sealed class ExecutionControl
 
         await Task.CompletedTask;
     }
-    public void PauseOrStop()
+    public async Task PauseOrStop()
     {
         HarmStatus = HarmStatus switch
         {
@@ -54,6 +54,8 @@ public sealed class ExecutionControl
             EExecutionStatus.PAUSED => Reset(),
             _ => EExecutionStatus.STOPPED
         };
+
+        await Task.CompletedTask;
     }
     private async Task StartHeating()
     {

@@ -1,6 +1,5 @@
 using Microwave.Api.Common.Api;
 using Microwave.Api.Exceptions;
-using Microwave.Api.Validators.Requests;
 using Microwave.Core.Handlers;
 using Microwave.Core.Requests.Execution;
 using Microwave.Core.Responses;

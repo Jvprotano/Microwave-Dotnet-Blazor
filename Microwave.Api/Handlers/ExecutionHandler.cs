@@ -41,6 +41,8 @@ public class ExecutionHandler(IPredefinedProgramHandler predefinedProgramHandler
         if (!validatorResult.IsValid)
             throw new MicrowaveValidationException(validatorResult.ToString());
 
+        char? labelHeating = null;
+
         if (startRequest.PredefinedProgramId.HasValue)
         {
             var predefinedProgram = await predefinedProgramHandler.GetByIdAsync(startRequest.PredefinedProgramId.Value);
@@ -48,10 +50,12 @@ public class ExecutionHandler(IPredefinedProgramHandler predefinedProgramHandler
             startRequest = new StartRequest(
                 seconds: predefinedProgram.TimeSeconds,
                 power: predefinedProgram.Power,
-                predefinedProgramId: startRequest.PredefinedProgramId,
-                predefinedProgram: predefinedProgram);
+                predefinedProgramId: startRequest.PredefinedProgramId
+                );
+
+            labelHeating = predefinedProgram.LabelHeating;
         }
 
-        await ExecutionControl.Start(startRequest);
+        await ExecutionControl.Start(startRequest, labelHeating: labelHeating);
     }
 }

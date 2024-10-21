@@ -108,7 +108,7 @@ Este projeto é uma aplicação completa de controle de um micro-ondas. Ele é c
 
 ### Após inicializar a API, adicione a seguinte roda à URL para acessar o Swagger e obter informações dos endpoints
 
-- `/swagger` - Retorna o status atual do micro-ondas.
+- `/swagger` - Listará todos os endpoints criados
 
 ---
 

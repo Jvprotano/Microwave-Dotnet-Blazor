@@ -1,3 +1,5 @@
+using Microwave.Api.Exceptions;
+using Microwave.Api.Validators.Requests;
 using Microwave.Core.Enums;
 using Microwave.Core.Handlers;
 using Microwave.Core.Models;
@@ -6,7 +8,7 @@ using Microwave.Core.Responses.Execution;
 
 namespace Microwave.Api.Handlers;
 
-public class ExecutionHandler : IExecutionHandler
+public class ExecutionHandler(IPredefinedProgramHandler predefinedProgramHandler) : IExecutionHandler
 {
     private static ExecutionControl ExecutionControl
         => ExecutionControl.GetInstance();
@@ -31,5 +33,25 @@ public class ExecutionHandler : IExecutionHandler
     }
 
     public async Task StartAsync(StartRequest startRequest)
-        => await ExecutionControl.Start(startRequest);
+    {
+        var validator = new StartRequestValidator();
+
+        var validatorResult = await validator.ValidateAsync(startRequest);
+
+        if (!validatorResult.IsValid)
+            throw new MicrowaveValidationException(validatorResult.ToString());
+
+        if (startRequest.PredefinedProgramId.HasValue)
+        {
+            var predefinedProgram = await predefinedProgramHandler.GetByIdAsync(startRequest.PredefinedProgramId.Value);
+
+            startRequest = new StartRequest(
+                seconds: predefinedProgram.TimeSeconds,
+                power: predefinedProgram.Power,
+                predefinedProgramId: startRequest.PredefinedProgramId,
+                predefinedProgram: predefinedProgram);
+        }
+
+        await ExecutionControl.Start(startRequest);
+    }
 }

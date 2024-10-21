@@ -10,6 +10,7 @@ using Microwave.Core.Handlers;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -17,10 +18,26 @@ builder.Services.AddSwaggerGen(c =>
         In = ParameterLocation.Header,
         Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
         Name = "Authorization",
-        Type = SecuritySchemeType.Http,
+        Type = SecuritySchemeType.ApiKey,
         Scheme = "bearer",
         BearerFormat = "JWT"
     });
+    c.AddSecurityRequirement(
+        new OpenApiSecurityRequirement
+        {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        },
+                    },
+                    Array.Empty<string>()
+                }
+        }
+    );
 });
 
 builder.Services.AddDbContext<AppDbContext>(x =>

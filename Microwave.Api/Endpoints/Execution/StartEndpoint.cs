@@ -1,4 +1,5 @@
 using Microwave.Api.Common.Api;
+using Microwave.Api.Exceptions;
 using Microwave.Api.Validators.Requests;
 using Microwave.Core.Handlers;
 using Microwave.Core.Requests.Execution;
@@ -21,14 +22,20 @@ public class StartEndpoint : IEndpoint
         IExecutionHandler handler
     )
     {
-        var validator = new StartRequestValidator();
+        try
+        {
+            await handler.StartAsync(request);
 
-        var validatorResult = await validator.ValidateAsync(request);
+            return Results.Ok(new BaseResponse<string>(data: "Operação realizada", message: "Iniciado com sucesso!"));
+        }
+        catch (MicrowaveValidationException ex)
+        {
+            return Results.BadRequest(new BaseResponse<string>(string.Empty, ex.Message));
+        }
+        catch (Exception)
+        {
+            return Results.BadRequest(new BaseResponse<string>(string.Empty, "Erro desconhecido"));
+        }
 
-        if (!validatorResult.IsValid)
-            return Results.BadRequest(new BaseResponse<string>(validatorResult.ToString()));
-
-        await handler.StartAsync(request);
-        return Results.Ok(new BaseResponse<string>(data: "Execução iniciada", message: "Iniciado com sucesso!"));
     }
 }

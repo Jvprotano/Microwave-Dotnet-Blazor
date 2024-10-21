@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 
 using Microwave.Api.Data;
+using Microwave.Api.Exceptions;
+using Microwave.Api.Validators.Requests;
 using Microwave.Core.Handlers;
 using Microwave.Core.Models;
 using Microwave.Core.Requests.PredefinedPrograms;
@@ -11,11 +13,11 @@ public class PredefinedProgramHandler(AppDbContext appDbContext) : IPredefinedPr
 {
     public async Task<IList<PredefinedProgram>> GetAll()
     {
-        var listPrograms = await appDbContext.PredefinedPrograms
+        var programs = await appDbContext.PredefinedPrograms
                 .AsNoTracking()
                 .ToListAsync();
 
-        return listPrograms;
+        return programs;
     }
 
     public async Task<IList<PredefinedProgram>> GetCustomPrograms()
@@ -27,11 +29,41 @@ public class PredefinedProgramHandler(AppDbContext appDbContext) : IPredefinedPr
 
         return listPrograms;
     }
+    public async Task<PredefinedProgram> GetByIdAsync(Guid id)
+    {
+        try
+        {
+            var program = await appDbContext.PredefinedPrograms
+                    .AsNoTracking()
+                    .FirstAsync(c => c.Id == id);
 
+            return program;
+        }
+        catch (ArgumentNullException)
+        {
+            throw new ArgumentNullException("Predefined program not found");
+        }
+        catch (InvalidOperationException)
+        {
+            throw new InvalidOperationException("Predefined program not found");
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+
+    }
     public async Task<PredefinedProgram> SaveCustomProgram(CreatePredefinedProgramRequest request)
     {
         try
         {
+            var validator = new CreatePredefinedProgramValidator();
+
+            var validationResult = await validator.ValidateAsync(request);
+
+            if (!validationResult.IsValid)
+                throw new MicrowaveValidationException(validationResult.ToString());
+
             PredefinedProgram predefinedProgram = new(
                 request.Name,
                 request.Food,
@@ -45,6 +77,10 @@ public class PredefinedProgramHandler(AppDbContext appDbContext) : IPredefinedPr
             await appDbContext.SaveChangesAsync();
 
             return predefinedProgram;
+        }
+        catch (MicrowaveValidationException)
+        {
+            throw;
         }
         catch (Exception)
         {

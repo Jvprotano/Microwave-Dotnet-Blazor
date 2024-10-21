@@ -1,7 +1,5 @@
-using Microsoft.AspNetCore.Http.HttpResults;
-
 using Microwave.Api.Common.Api;
-using Microwave.Api.Validators.Requests;
+using Microwave.Api.Exceptions;
 using Microwave.Core.Handlers;
 using Microwave.Core.Models;
 using Microwave.Core.Requests.PredefinedPrograms;
@@ -22,15 +20,19 @@ public class CreateCustomPredefinedProgramEndpoint : IEndpoint
         CreatePredefinedProgramRequest request,
         IPredefinedProgramHandler handler)
     {
-        var validator = new CreatePredefinedProgramValidator();
+        try
+        {
+            var program = await handler.SaveCustomProgram(request);
 
-        var validationResult = await validator.ValidateAsync(request);
-
-        if (!validationResult.IsValid)
-            return Results.BadRequest(new BaseResponse<string>(string.Empty, message: validationResult.ToString()));
-
-        var program = await handler.SaveCustomProgram(request);
-
-        return Results.Ok(new BaseResponse<PredefinedProgram>(program));
+            return Results.Ok(new BaseResponse<PredefinedProgram>(program));
+        }
+        catch (MicrowaveValidationException ex)
+        {
+            return Results.BadRequest(new BaseResponse<string>("", ex.Message));
+        }
+        catch (Exception)
+        {
+            return Results.BadRequest(new BaseResponse<string>("", "Erro desconhecido"));
+        }
     }
 }

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microwave.Api", "Microwave.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microwave.Tests", "Microwave.Tests\Microwave.Tests.csproj", "{DD6BD897-B801-4C5E-8B87-AB72C2194DAC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microwave.Web", "Microwave.Web\Microwave.Web.csproj", "{B48D21F0-26F6-459E-9305-F94EF821789A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{DD6BD897-B801-4C5E-8B87-AB72C2194DAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD6BD897-B801-4C5E-8B87-AB72C2194DAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD6BD897-B801-4C5E-8B87-AB72C2194DAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B48D21F0-26F6-459E-9305-F94EF821789A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B48D21F0-26F6-459E-9305-F94EF821789A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B48D21F0-26F6-459E-9305-F94EF821789A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B48D21F0-26F6-459E-9305-F94EF821789A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

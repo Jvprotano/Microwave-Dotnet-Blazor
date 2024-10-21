@@ -8,8 +8,8 @@ public static class Endpoint
 {
     public static void MapEndpoints(this WebApplication app)
     {
-        var endpoints = app.MapGroup("api/v1/")
-        //.RequireAuthorization()
+        var endpoints = app.MapGroup("v1/")
+        .RequireAuthorization()
         ;
 
         endpoints.MapGroup("predefined-programs")

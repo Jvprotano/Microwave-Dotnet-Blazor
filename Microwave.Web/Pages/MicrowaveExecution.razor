@@ -1,0 +1,46 @@
+﻿@page "/"
+@layout HeadlessLayout
+@inherits MicrowavePage
+
+<PageTitle>Controle do Micro-ondas</PageTitle>
+
+<MudGrid Justify="Justify.Center">
+    <MudItem xs="12" sm="12" md="8">
+        <MudPaper Elevation="3" Class="mud-width-full pa-8">
+            <h1 class="mud-text-primary">Micro-ondas</h1>
+
+            <div class="mud-text-h6">Label de aquecimento: @LabelHeating</div>
+            <div class="mud-text-h6">Tempo Restante: @TimeRemaining segundos</div>
+            <div class="mud-text-h6">Potência: @PowerLevel</div>
+
+            <!-- Seleção de Programas -->
+            <MudSelect T="string" Label="Programas Pré-definidos" @bind-Value="SelectedProgram" OnChange="ProgramSelected">
+                @if (Programas != null)
+                {
+                    @foreach (var programa in Programas)
+                    {
+                        <MudSelectItem Value="@programa.Nome">@programa.Nome (@programa.TempoSegundos segundos, @programa.Potencia)</MudSelectItem>
+                    }
+                }
+            </MudSelect>
+
+            <!-- Seleção de Potência -->
+            <MudTextField T="int" Label="Definir Potência" @bind-Value="PowerLevel" />
+
+            <!-- Campo para definir tempo manualmente -->
+            <MudTextField T="int" Label="Definir tempo (segundos)" @bind-Value="TimeInput" />
+
+            <!-- Botões de controle -->
+            <div class="d-flex mt-4">
+                <MudButton OnClick="StartMicrowave" Color="Color.Success" Variant="Variant.Filled">Iniciar</MudButton>
+                <MudSpacer />
+                <MudButton OnClick="PauseMicrowave" Color="Color.Warning" Variant="Variant.Filled">Pausar/Parar</MudButton>
+            </div>
+
+            <!-- Botão para criar novo programa -->
+            <div class="mt-4">
+                <MudButton Href="/criar-programa" Color="Color.Primary" Variant="Variant.Outlined">Criar Novo Programa</MudButton>
+            </div>
+        </MudPaper>
+    </MudItem>
+</MudGrid>

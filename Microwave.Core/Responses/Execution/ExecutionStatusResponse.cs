@@ -12,7 +12,7 @@ public class ExecutionStatusResponse
         ExecutionStatus = executionStatus;
         Power = power;
         RemainingTime = remainingTime;
-        LabelHarmChar = labelHeatingChar;
+        LabelHeatingChar = labelHeatingChar;
         TotalTime = totalTime;
     }
     public EExecutionStatus ExecutionStatus { get; }
@@ -21,21 +21,21 @@ public class ExecutionStatusResponse
     public int Power { get; }
 
     [JsonIgnore]
-    public char LabelHarmChar { get; }
+    public char LabelHeatingChar { get; }
     [JsonIgnore]
     private int ElapsedTime => TotalTime - RemainingTime;
-    public string LabelHarm => GenerateLabelHarm();
+    public string LabelHeating => GenerateLabelHeating();
 
-    private string GenerateLabelHarm()
+    private string GenerateLabelHeating()
     {
         List<string> labels = new();
 
         for (int i = 0; i < ElapsedTime; i++)
         {
-            labels.Add(new string(LabelHarmChar, Power));
+            labels.Add(new string(LabelHeatingChar, Power));
         }
 
-        var labelHarm = string.Join(" ", labels);
-        return labelHarm;
+        var labelHeating = string.Join(" ", labels);
+        return labelHeating;
     }
 }

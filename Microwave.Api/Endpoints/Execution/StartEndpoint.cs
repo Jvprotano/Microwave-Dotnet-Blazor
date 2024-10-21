@@ -29,6 +29,6 @@ public class StartEndpoint : IEndpoint
             return Results.BadRequest(new BaseResponse<string>(validatorResult.ToString()));
 
         await handler.StartAsync(request);
-        return Results.NoContent();
+        return Results.Ok(new BaseResponse<string>(data: "Execução iniciada", message: "Iniciado com sucesso!"));
     }
 }

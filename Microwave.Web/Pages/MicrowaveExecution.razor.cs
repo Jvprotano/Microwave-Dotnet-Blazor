@@ -43,7 +43,7 @@ public partial class MicrowavePage : ComponentBase
     public int PowerLevel = 10; // Potência atual do micro-ondas
     public string SelectedProgram = string.Empty; // Programa pré-definido selecionado
     public List<Programa> Programas = new(); // Lista de programas retornados pela API
-    private System.Timers.Timer statusTimer;
+    private System.Timers.Timer statusTimer = new();
     public EExecutionStatus ExecutionStatus { get; set; }
 
 
@@ -64,7 +64,7 @@ public partial class MicrowavePage : ComponentBase
     private void IniciarTimer()
     {
         statusTimer = new System.Timers.Timer(1000); // Verifica o status a cada 1 segundo
-        statusTimer.Elapsed += VerificarStatus;
+        statusTimer.Elapsed += VerificarStatus!;
         statusTimer.AutoReset = true;
         statusTimer.Start();
     }

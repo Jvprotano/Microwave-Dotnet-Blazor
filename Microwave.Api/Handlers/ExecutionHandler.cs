@@ -25,11 +25,9 @@ public class ExecutionHandler : IExecutionHandler
         return executionStatus;
     }
 
-    public Task PauseOrCancelAsync()
+    public async Task PauseOrCancelAsync()
     {
-        ExecutionControl.PauseOrStop();
-
-        return Task.CompletedTask;
+        await ExecutionControl.PauseOrStop();
     }
 
     public async Task StartAsync(StartRequest startRequest)

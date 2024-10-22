@@ -41,11 +41,11 @@ public class PredefinedProgramHandler(AppDbContext appDbContext) : IPredefinedPr
         }
         catch (ArgumentNullException)
         {
-            throw new ArgumentNullException("Predefined program not found");
+            throw;
         }
         catch (InvalidOperationException)
         {
-            throw new InvalidOperationException("Predefined program not found");
+            throw;
         }
         catch (Exception)
         {

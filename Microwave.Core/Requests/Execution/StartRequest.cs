@@ -5,7 +5,11 @@ namespace Microwave.Core.Requests.Execution;
 
 public class StartRequest : BaseRequest
 {
-    public StartRequest(int seconds = 30, int power = 10, Guid? predefinedProgramId = null)
+    public StartRequest(
+        int seconds = 30,
+        int power = 10,
+        Guid? predefinedProgramId = null
+)
     {
         Seconds = seconds;
         Power = power;

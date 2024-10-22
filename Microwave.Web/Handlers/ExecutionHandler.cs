@@ -17,20 +17,19 @@ public class ExecutionHandler(IHttpClientFactory httpClientFactory) : IHttpExecu
     }
     public async Task<ExecutionStatusResponse> GetExecutionStatus()
     {
-        var teste = await _client.GetFromJsonAsync<BaseResponse<ExecutionStatusResponse>>("/v1/get-execution-status");
-        Console.WriteLine(teste.Data.RemainingTime);
-        return teste.Data;
+        var response = await _client.GetFromJsonAsync<BaseResponse<ExecutionStatusResponse>>("/v1/get-execution-status");
+        return response!.Data!;
     }
 
     public async Task<BaseResponse<string>> StartAsync(StartRequest startRequest)
     {
-        var teste = await _client.PostAsJsonAsync("/v1/start", startRequest);
+        var response = await _client.PostAsJsonAsync("/v1/start", startRequest);
 
-        var content = await teste.Content.ReadFromJsonAsync<BaseResponse<string>>();
+        var content = await response.Content.ReadFromJsonAsync<BaseResponse<string>>();
 
-        if (teste.IsSuccessStatusCode)
+        if (response.IsSuccessStatusCode)
             return content!;
 
-        return new BaseResponse<string>("", message: content?.Message);
+        return new BaseResponse<string>(string.Empty, message: content?.Message);
     }
 }

@@ -117,3 +117,7 @@ Este projeto é uma aplicação completa de controle de um micro-ondas. Ele é c
 Os testes foram desenvolvidos utilizando o xUnit para garantir que a lógica de negócio está funcionando corretamente. 
 
 ---
+
+## Autenticação
+
+A autenticação se dá através dos endpoints de registro e login e deverá ser feita utilizando o Bearer Token retornado pelo endpoint de login.

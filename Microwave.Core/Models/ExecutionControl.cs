@@ -1,5 +1,6 @@
 using Microwave.Core.Enums;
 using Microwave.Core.Requests.Execution;
+using Microwave.Core.Responses.Execution;
 
 namespace Microwave.Core.Models;
 
@@ -25,35 +26,51 @@ public sealed class ExecutionControl
     public int TimeRemaining { get; private set; }
     public int TotalTime { get; private set; }
     public char LabelHeating { get; private set; } = '.';
+    private bool IsPredefinedProgram = false;
 
-
-    public async Task Start(StartRequest request)
+    public async Task Start(StartRequest request, char? labelHeating = null)
     {
+        if (request.PredefinedProgramId.HasValue)
+        {
+            IsPredefinedProgram = true;
+            LabelHeating = labelHeating ?? '.';
+        }
+        else
+            IsPredefinedProgram = false;
+
         if (HarmStatus == EExecutionStatus.STOPPED)
         {
             TimeRemaining = request.Seconds;
             TotalTime = request.Seconds;
             Power = request.Power;
+
+            HarmStatus = EExecutionStatus.RUNNING;
+            _ = StartHeating();
         }
-        else if (HarmStatus == EExecutionStatus.RUNNING)
+        else if (HarmStatus == EExecutionStatus.PAUSED)
+        {
+            HarmStatus = EExecutionStatus.RUNNING;
+            _ = StartHeating();
+        }
+        else if (HarmStatus == EExecutionStatus.RUNNING && !IsPredefinedProgram)
         {
             TimeRemaining += DEFAULT_ADD_TIME;
             TotalTime += DEFAULT_ADD_TIME;
         }
 
-        HarmStatus = EExecutionStatus.RUNNING;
-        _ = StartHeating();
-
         await Task.CompletedTask;
     }
     public async Task PauseOrStop()
     {
-        HarmStatus = HarmStatus switch
+        if (!IsPredefinedProgram)
         {
-            EExecutionStatus.RUNNING => EExecutionStatus.PAUSED,
-            EExecutionStatus.PAUSED => Reset(),
-            _ => EExecutionStatus.STOPPED
-        };
+            HarmStatus = HarmStatus switch
+            {
+                EExecutionStatus.RUNNING => EExecutionStatus.PAUSED,
+                EExecutionStatus.PAUSED => Reset(),
+                _ => EExecutionStatus.STOPPED
+            };
+        }
 
         await Task.CompletedTask;
     }
@@ -79,15 +96,33 @@ public sealed class ExecutionControl
 
         return EExecutionStatus.STOPPED;
     }
-    public (EExecutionStatus status,
-            int power,
-            int totalTime,
-            int timeRemaining,
-            char labelHeating) GetStatus()
-            => (
-                status: HarmStatus,
+    public ExecutionStatusResponse GetStatus()
+    {
+        var execStatus = new ExecutionStatusResponse(
+                executionStatus: HarmStatus,
                 power: Power,
                 totalTime: TotalTime,
-                timeRemaining: TimeRemaining,
-                 labelHeating: LabelHeating);
+                remainingTime: TimeRemaining,
+                 labelHeatingChar: LabelHeating);
+
+        execStatus.SetLabelHeating(GenerateLabelHeating());
+
+        return execStatus;
+    }
+
+    private string GenerateLabelHeating()
+    {
+        List<string> labels = new();
+
+        int elapsedTime = TotalTime - TimeRemaining;
+
+        for (int i = 0; i < elapsedTime; i++)
+        {
+            labels.Add(new string(LabelHeating, Power));
+        }
+
+        var labelHeating = string.Join(" ", labels);
+
+        return labelHeating;
+    }
 }

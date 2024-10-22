@@ -15,14 +15,7 @@ public class ExecutionHandler(IPredefinedProgramHandler predefinedProgramHandler
 
     public ExecutionStatusResponse GetExecutionStatus()
     {
-        (EExecutionStatus status,
-            int power,
-            int totalTime,
-            int remainingTime,
-            char labelHeating) = ExecutionControl.GetStatus();
-
-        ExecutionStatusResponse executionStatus = new(executionStatus: status, power: power, totalTime: totalTime, remainingTime: remainingTime,
-            labelHeatingChar: labelHeating);
+        ExecutionStatusResponse executionStatus = ExecutionControl.GetStatus();
 
         return executionStatus;
     }

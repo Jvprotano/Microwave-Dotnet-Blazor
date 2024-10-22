@@ -20,7 +20,7 @@ public class ExecutionControlTests
         await _executionControl.Start(_startRequest);
         var executionStatus = _executionControl.GetStatus();
 
-        Assert.Equal(EExecutionStatus.RUNNING, executionStatus.status);
+        Assert.Equal(EExecutionStatus.RUNNING, executionStatus.ExecutionStatus);
         await StopExecution();
     }
     [Fact]
@@ -32,7 +32,7 @@ public class ExecutionControlTests
 
         var executionStatus = _executionControl.GetStatus();
 
-        Assert.Equal(EExecutionStatus.PAUSED, executionStatus.status);
+        Assert.Equal(EExecutionStatus.PAUSED, executionStatus.ExecutionStatus);
         await StopExecution();
     }
     [Fact]
@@ -44,7 +44,7 @@ public class ExecutionControlTests
 
         var executionStatus = _executionControl.GetStatus();
 
-        Assert.Equal(EExecutionStatus.STOPPED, executionStatus.status);
+        Assert.Equal(EExecutionStatus.STOPPED, executionStatus.ExecutionStatus);
     }
     [Fact]
     public async Task Should_Stop_When_Finish()
@@ -55,7 +55,7 @@ public class ExecutionControlTests
 
         var executionStatus = _executionControl.GetStatus();
 
-        Assert.Equal(EExecutionStatus.STOPPED, executionStatus.status);
+        Assert.Equal(EExecutionStatus.STOPPED, executionStatus.ExecutionStatus);
     }
     [Fact]
     public async Task Should_Reset_Information_When_Stop()
@@ -68,7 +68,7 @@ public class ExecutionControlTests
 
         var executionStatusThan = _executionControl.GetStatus();
 
-        Assert.NotEqual(executionStatusBefore.totalTime, executionStatusThan.totalTime);
-        Assert.Equal(0, executionStatusThan.totalTime);
+        Assert.NotEqual(executionStatusBefore.TotalTime, executionStatusThan.TotalTime);
+        Assert.Equal(0, executionStatusThan.TotalTime);
     }
 }

@@ -19,13 +19,13 @@ builder.Services.AddAuthorizationCore();
 
 builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthenticationStateProvider>();
 builder.Services.AddScoped(c => (IJwtAuthenticationStateProvider)c.GetRequiredService<AuthenticationStateProvider>());
+builder.Services.AddScoped<CustomHttpHandler>();
 
 builder.Services.AddTransient<IAccountHandler, AccountHandler>();
 builder.Services.AddTransient<IHttpExecutionHandler, ExecutionHandler>();
+builder.Services.AddTransient<IHttpPredefinedProgramHandler, PredefinedProgramHandler>();
 
 builder.Services.AddMudServices();
-
-builder.Services.AddScoped<CustomHttpHandler>();
 
 builder.Services.AddBlazoredLocalStorage();
 

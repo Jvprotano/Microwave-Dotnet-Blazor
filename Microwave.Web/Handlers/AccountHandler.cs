@@ -21,7 +21,7 @@ public class AccountHandler(IHttpClientFactory httpClientFactory) : IAccountHand
             return new BaseResponse<string>(result?.AccessToken, "Login realizado com sucesso!");
         }
 
-        return new BaseResponse<string>("", "Dados inválidos");
+        return new BaseResponse<string>(string.Empty, "Dados inválidos");
     }
 
     public async Task<BaseResponse<string>> RegisterAsync(RegisterRequest request)

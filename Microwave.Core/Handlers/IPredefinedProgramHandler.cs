@@ -8,6 +8,7 @@ public interface IPredefinedProgramHandler
 {
     Task<IList<PredefinedProgram>> GetAll();
     Task<IList<PredefinedProgram>> GetCustomPrograms();
+    Task<PredefinedProgram> GetByIdAsync(Guid id);
     Task<PredefinedProgram> SaveCustomProgram(CreatePredefinedProgramRequest request);
     Task DeleteCustomProgram(Guid id);
 }

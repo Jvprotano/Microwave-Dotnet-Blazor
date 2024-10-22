@@ -31,10 +31,17 @@ public class StartEndpoint : IEndpoint
         {
             return Results.BadRequest(new BaseResponse<string>(string.Empty, ex.Message));
         }
+        catch (ArgumentNullException)
+        {
+            throw new ArgumentNullException("Predefined program not found");
+        }
+        catch (InvalidOperationException)
+        {
+            throw new InvalidOperationException("Predefined program not found");
+        }
         catch (Exception)
         {
             return Results.BadRequest(new BaseResponse<string>(string.Empty, "Erro desconhecido"));
         }
-
     }
 }

@@ -7,13 +7,14 @@ namespace Microwave.Core.Responses.Execution;
 public class ExecutionStatusResponse
 {
     public ExecutionStatusResponse(EExecutionStatus executionStatus, int power, int totalTime, int remainingTime,
-         char labelHeatingChar)
+         char labelHeatingChar, string labelHeating = ".")
     {
         ExecutionStatus = executionStatus;
         Power = power;
         RemainingTime = remainingTime;
         LabelHeatingChar = labelHeatingChar;
         TotalTime = totalTime;
+        LabelHeating = labelHeating;
     }
     public EExecutionStatus ExecutionStatus { get; }
     public int RemainingTime { get; }
@@ -22,20 +23,10 @@ public class ExecutionStatusResponse
 
     [JsonIgnore]
     public char LabelHeatingChar { get; }
-    [JsonIgnore]
-    private int ElapsedTime => TotalTime - RemainingTime;
-    public string LabelHeating => GenerateLabelHeating();
+    public string LabelHeating { get; set; }
 
-    private string GenerateLabelHeating()
+    public void SetLabelHeating(string labelHeating)
     {
-        List<string> labels = new();
-
-        for (int i = 0; i < ElapsedTime; i++)
-        {
-            labels.Add(new string(LabelHeatingChar, Power));
-        }
-
-        var labelHeating = string.Join(" ", labels);
-        return labelHeating;
+        LabelHeating = labelHeating;
     }
 }

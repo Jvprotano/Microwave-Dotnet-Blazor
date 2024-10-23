@@ -14,11 +14,20 @@ Este projeto é uma aplicação completa de controle de um micro-ondas. Ele é c
 ## Tecnologias Utilizadas
 
 - .NET 8 (Backend e API)
-- Blazor (Frontend)
+- Blazor WASM (Frontend)
 - Entity Framework Core (ORM)
 - SQL Server (Banco de Dados)
 - xUnit (Testes unitários)
 - Docker (Opcional, se for containerizar a aplicação)
+  
+---
+
+## Alguns padrões e princípios aplicados
+
+- Singleton
+- Dependency Injection
+- SOLID
+- DRY
   
 ---
 
@@ -28,7 +37,7 @@ Este projeto é uma aplicação completa de controle de um micro-ondas. Ele é c
 
 - **.NET SDK 8**: [Instale o SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 - **SQL Server**: Pode ser instalado localmente ou usar o [Docker](https://hub.docker.com/_/microsoft-mssql-server) para rodar em containers.
-- **Visual Studio 2022** ou **VS Code** (recomendado para desenvolvimento)
+- **Visual Studio 2022** ou **VS Code**
 
 ### Passos para Rodar o Projeto Localmente
 
@@ -67,7 +76,7 @@ Este projeto é uma aplicação completa de controle de um micro-ondas. Ele é c
    dotnet ef database update
    ```
 
-   Isso vai criar o banco de dados e as tabelas necessárias com base nas migrations.
+   Caso a string de conexão tenha sido criada corretamente e o servidor do SQLServer rodando, o Entity Framework deverá vai criar o banco de dados e as tabelas necessárias com base nas migrations.
 
 4. **Rodar o Backend (API)**
 
@@ -104,20 +113,41 @@ Este projeto é uma aplicação completa de controle de um micro-ondas. Ele é c
 
 ---
 
+## Testes
+
+Os testes unitários foram desenvolvidos utilizando o xUnit para garantir que a lógica de negócio está funcionando corretamente. 
+
+---
+
 ## API Endpoints
+
+- **Com exceção dos endpoints de Registro e Login de usuário, todos os endpoints requerem autenticação**
 
 ### Após inicializar a API, adicione a seguinte roda à URL para acessar o Swagger e obter informações dos endpoints
 
 - `/swagger` - Listará todos os endpoints criados
 
----
-
-## Testes
-
-Os testes foram desenvolvidos utilizando o xUnit para garantir que a lógica de negócio está funcionando corretamente. 
-
----
-
 ## Autenticação
 
 A autenticação se dá através dos endpoints de registro e login e deverá ser feita utilizando o Bearer Token retornado pelo endpoint de login.
+Padrão para uso no Swagger: Bearer token
+
+### O funcionamento do micro-ondas se dá através dos endpoints de /start e /pause-stop. 
+- `/v1/start` - Inicia o aquecimento usando os valores informados ou, caso informado o ID de um programa predefinido, usando os valores deste.
+
+- `/v1/pause-stop` - Caso o aquecimento esteja em execução, acionar este endpoint uma vez pausará a execução e, em uma segunda vez, parará limpando os dados.
+
+- `/v1/get-execution-status` - Através deste endpoint é possível acompanhar o andamento da execução de aquecimento, exibindo dados como tempo total, tempo decorrido e label de execução.
+
+- `/v1/predefined-programs` - Retornará uma lista com todos os programas pré-definidos, criados por padrão ou pelo usuário.
+
+- `/v1/predefined-programs/custom-programs` - Retornará uma lista com todos os programas pré-definidos CRIADOS PELO USUÁRIO, ou seja, personalizados.
+
+- `/v1/predefined-programs/custom-programs` - Permite criar novos programas pré-definidos.
+
+
+
+
+
+Estes acionam ações em uma classe singleton e a execução pode ser acompanhada através 
+---

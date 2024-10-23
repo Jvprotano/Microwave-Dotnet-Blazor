@@ -1,0 +1,52 @@
+@page "/create-program"
+@layout HeadlessLayout
+@inherits CreateProgramPage
+
+<PageTitle>Criar programa</PageTitle>
+
+<MudGrid Justify="Justify.Center">
+    <MudItem xs="12" sm="12" md="8">
+        <MudPaper Elevation="3" Class="mud-width-full pa-8">
+            <div class="d-flex justify-center">
+                <img src="imgs/logo-benner.png" alt="logo benner" width="100" />
+            </div>
+            <h1>Criar novo programa predefinido</h1>
+            <EditForm Model="@InputModel" OnValidSubmit="@OnValidSubmitAsync">
+                <DataAnnotationsValidator />
+
+                <MudTextField T="string" Label="Name" Required="true" RequiredError="Informe o e-mail"
+                    InputType="InputType.Text" For="@(()=> InputModel.Name)" @bind-Value="InputModel.Name" />
+
+                <MudTextField T="string" Label="Alimento" Required="true" InputType="InputType.Text"
+                    For="@(()=> InputModel.Food)" @bind-Value="InputModel.Food" />
+
+                <MudTextField T="string" MaxLength="1" Label="Label de aquecimento" Required="true"
+                    InputType="InputType.Text" For="@(()=> InputModel.LabelHeating)"
+                    @bind-Value="InputModel.LabelHeating" />
+
+                <MudTextField T="string" Label="Instruções" Required="false" InputType="InputType.Text"
+                    For="@(()=> InputModel.Instructions)" @bind-Value="InputModel.Instructions" />
+
+                <MudTextField T="int" Label="Tempo (segundos)" Required="true" InputType="InputType.Text"
+                    For="@(()=> InputModel.TimeSeconds)" @bind-Value="InputModel.TimeSeconds" />
+
+                <MudTextField T="int" Label="Potência" Required="true" InputType="InputType.Text"
+                    For="@(()=> InputModel.Power)" @bind-Value="InputModel.Power" />
+
+                <div class="d-flex mt-8">
+                    @if (IsBusy)
+                    {
+                        <MudProgressLinear Color="Color.Info" />
+                    }
+                    else
+                    {
+                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Salvar
+                        </MudButton>
+                        <MudSpacer />
+                        <MudButton Href="/">Retornar para Micro-ondas</MudButton>
+                    }
+                </div>
+            </EditForm>
+        </MudPaper>
+    </MudItem>
+</MudGrid>

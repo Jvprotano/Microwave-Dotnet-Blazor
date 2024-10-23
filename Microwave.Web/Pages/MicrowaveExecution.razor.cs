@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Components.Authorization;
 
 using Microwave.Core.Enums;
 using Microwave.Core.Handlers;
-using Microwave.Core.Models;
 using Microwave.Core.Requests.Execution;
 using Microwave.Core.Responses.PredefinedProgram;
 
@@ -42,17 +41,24 @@ public partial class MicrowavePage : ComponentBase
     }
     public string LabelHeating = ".";
     public int TimeRemaining;
-    // public int TimeInput = 30;
-    // public int PowerLevel = 10;
-    public Guid? SelectedProgramId;
     public List<PredefinedProgramResponse> Programas = new();
     private System.Timers.Timer statusTimer = new();
     public EExecutionStatus ExecutionStatus { get; set; }
+    public string? FinalMessage { get; set; } = null;
 
     public async Task StartMicrowave()
     {
+        FinalMessage = null;
         if (InputModel.Seconds <= 0)
             return;
+
+        if (ExecutionStatus == EExecutionStatus.STOPPED)
+        {
+            TimeRemaining = InputModel.Seconds;
+
+            if (InputModel.PredefinedProgramId.HasValue)
+                TimeRemaining = Programas.FirstOrDefault(p => p.Id == InputModel.PredefinedProgramId)!.TimeSeconds;
+        }
 
         var response = await Handler.StartAsync(new(seconds: InputModel.Seconds, power: InputModel.Power, predefinedProgramId: InputModel.PredefinedProgramId));
 
@@ -64,7 +70,7 @@ public partial class MicrowavePage : ComponentBase
     }
     private void IniciarTimer()
     {
-        statusTimer = new System.Timers.Timer(1000);
+        statusTimer = new System.Timers.Timer(500);
         statusTimer.Elapsed += VerificarStatus!;
         statusTimer.AutoReset = true;
 
@@ -79,6 +85,10 @@ public partial class MicrowavePage : ComponentBase
             LabelHeating = response.LabelHeating;
             ExecutionStatus = response.ExecutionStatus;
 
+            if (response.ExecutionStatus == EExecutionStatus.RUNNING
+                && response.RemainingTime == 0)
+                FinalMessage = "Aquecimento concluído";
+
             await InvokeAsync(StateHasChanged);
 
             if (response.ExecutionStatus == EExecutionStatus.STOPPED
@@ -89,6 +99,7 @@ public partial class MicrowavePage : ComponentBase
 
     public async Task PauseMicrowave()
     {
+        FinalMessage = null;
         await Handler.PauseOrCancelAsync();
     }
     private async Task CarregarProgramasAsync()

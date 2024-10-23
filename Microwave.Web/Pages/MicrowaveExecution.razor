@@ -12,15 +12,22 @@
 
                 <div class="mud-text-h6">Label de aquecimento: @LabelHeating</div>
                 <div class="mud-text-h6">Tempo Restante: @TimeRemaining segundos</div>
+               
+                @if (!string.IsNullOrEmpty(FinalMessage))
+                {
+                    <MudText Class="blinking-text" Color="Color.Success">Aquecimento concluído</MudText>
+                }
+
                 <div class="mud-text-h6">Potência: @InputModel.Power</div>
 
                 <MudSelect T="Guid?" Label="Programas Pré-definidos" @bind-Value="InputModel.PredefinedProgramId">
+                    <MudSelectItem T="Guid?" Value="@(null)"></MudSelectItem>
 
                     @if (Programas != null && Programas.Any())
                     {
                         @foreach (var programa in Programas)
                         {
-                            <MudSelectItem Value="@((Guid?)programa.Id)">@programa!.Name (@programa.TimeSeconds segundos,
+                            <MudSelectItem  Value="@((Guid?)programa.Id)" Class="@((programa.IsPredefined) ? "italic-text" : "")">@programa!.Name (@programa.TimeSeconds segundos,
                                 @programa.Power) @(!string.IsNullOrEmpty(@programa.Instructions) ? $"- Instruções: {programa.Instructions}" : "")</MudSelectItem>
                         }
                     }
@@ -40,7 +47,7 @@
                 </div>
 
                 <div class="mt-4">
-                    <MudButton Href="/criar-programa" Color="Color.Primary" Variant="Variant.Outlined">Criar Novo
+                    <MudButton Href="/create-program" Color="Color.Primary" Variant="Variant.Outlined">Criar Novo
                         Programa
                     </MudButton>
                 </div>

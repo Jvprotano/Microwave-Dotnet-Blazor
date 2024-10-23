@@ -1,6 +1,5 @@
 using Microwave.Api.Exceptions;
 using Microwave.Api.Validators.Requests;
-using Microwave.Core.Enums;
 using Microwave.Core.Handlers;
 using Microwave.Core.Models;
 using Microwave.Core.Requests.Execution;
@@ -8,7 +7,7 @@ using Microwave.Core.Responses.Execution;
 
 namespace Microwave.Api.Handlers;
 
-public class ExecutionHandler(IPredefinedProgramHandler predefinedProgramHandler) : IExecutionHandler
+public class ExecutionHandler(IPredefinedProgramHandler predefinedProgramHandler) : HandlerBase, IExecutionHandler
 {
     private static ExecutionControl ExecutionControl
         => ExecutionControl.GetInstance();
@@ -27,28 +26,40 @@ public class ExecutionHandler(IPredefinedProgramHandler predefinedProgramHandler
 
     public async Task StartAsync(StartRequest startRequest)
     {
-        var validator = new StartRequestValidator();
-
-        var validatorResult = await validator.ValidateAsync(startRequest);
-
-        if (!validatorResult.IsValid)
-            throw new MicrowaveValidationException(validatorResult.ToString());
-
-        char? labelHeating = null;
-
-        if (startRequest.PredefinedProgramId.HasValue)
+        try
         {
-            var predefinedProgram = await predefinedProgramHandler.GetByIdAsync(startRequest.PredefinedProgramId.Value);
+            var validator = new StartRequestValidator();
 
-            startRequest = new StartRequest(
-                seconds: predefinedProgram.TimeSeconds,
-                power: predefinedProgram.Power,
-                predefinedProgramId: startRequest.PredefinedProgramId
-                );
+            var validatorResult = await validator.ValidateAsync(startRequest);
 
-            labelHeating = predefinedProgram.LabelHeating;
+            if (!validatorResult.IsValid)
+                throw new MicrowaveValidationException(validatorResult.ToString());
+
+            char? labelHeating = null;
+
+            if (startRequest.PredefinedProgramId.HasValue)
+            {
+                var predefinedProgram = await predefinedProgramHandler.GetByIdAsync(startRequest.PredefinedProgramId.Value);
+
+                startRequest = new StartRequest(
+                    seconds: predefinedProgram.TimeSeconds,
+                    power: predefinedProgram.Power,
+                    predefinedProgramId: startRequest.PredefinedProgramId
+                    );
+
+                labelHeating = predefinedProgram.LabelHeating;
+            }
+
+            await ExecutionControl.Start(startRequest, labelHeating: labelHeating);
         }
-
-        await ExecutionControl.Start(startRequest, labelHeating: labelHeating);
+        catch (MicrowaveValidationException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            LogToFile(ex);
+            throw;
+        }
     }
 }

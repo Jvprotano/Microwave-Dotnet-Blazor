@@ -13,8 +13,8 @@ public class CreateCustomPredefinedProgramEndpoint : IEndpoint
         => app.MapPost("create-predefined-program", HandleAsync)
             .WithName("Create Predefined Program")
             .WithSummary("Add a new predefined program to the microwave")
-            .Produces<PredefinedProgram>(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status400BadRequest);
+            .Produces<BaseResponse<PredefinedProgram>>(StatusCodes.Status200OK)
+            .Produces<BaseResponse<string>>(StatusCodes.Status400BadRequest);
 
     public static async Task<IResult> HandleAsync(
         CreatePredefinedProgramRequest request,
@@ -28,11 +28,11 @@ public class CreateCustomPredefinedProgramEndpoint : IEndpoint
         }
         catch (MicrowaveValidationException ex)
         {
-            return Results.BadRequest(new BaseResponse<string>("", ex.Message));
+            return Results.BadRequest(new BaseResponse<string>(null, ex.Message));
         }
         catch (Exception)
         {
-            return Results.BadRequest(new BaseResponse<string>("", "Erro desconhecido"));
+            return Results.BadRequest(new BaseResponse<string>(null, "Erro desconhecido"));
         }
     }
 }

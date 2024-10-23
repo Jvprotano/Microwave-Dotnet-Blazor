@@ -59,3 +59,17 @@
 .loading-progress-text:after {
     content: var(--blazor-load-percentage-text, "Loading");
 }
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+.blinking-text {
+    animation: blink 1s infinite;
+}
+
+.italic-text {
+    font-style: italic;
+}

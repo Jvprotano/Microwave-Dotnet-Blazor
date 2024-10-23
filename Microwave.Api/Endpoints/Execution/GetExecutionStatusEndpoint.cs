@@ -13,14 +13,14 @@ public class GetExecutionStatusEndpoint : IEndpoint
             .WithSummary("Gets the current status of the execution (Heating)")
             .WithOrder(3)
             .Produces<BaseResponse<ExecutionStatusResponse>>()
-            .Produces(StatusCodes.Status404NotFound);
+            .Produces<BaseResponse<string>>(StatusCodes.Status404NotFound);
 
     public static IResult Handle(IExecutionHandler handler)
     {
         var statusExecution = handler.GetExecutionStatus();
 
         if (statusExecution == null)
-            return Results.NotFound();
+            return Results.NotFound(new BaseResponse<string>(null, "Execução não encontrada."));
 
         return Results.Ok(new BaseResponse<ExecutionStatusResponse>(statusExecution));
     }

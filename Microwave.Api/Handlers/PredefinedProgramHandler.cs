@@ -9,7 +9,7 @@ using Microwave.Core.Requests.PredefinedPrograms;
 
 namespace Microwave.Api.Handlers;
 
-public class PredefinedProgramHandler(AppDbContext appDbContext) : IPredefinedProgramHandler
+public class PredefinedProgramHandler(AppDbContext appDbContext) : HandlerBase, IPredefinedProgramHandler
 {
     public async Task<IList<PredefinedProgram>> GetAll()
     {
@@ -47,8 +47,9 @@ public class PredefinedProgramHandler(AppDbContext appDbContext) : IPredefinedPr
         {
             throw;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            LogToFile(ex);
             throw;
         }
 
@@ -82,8 +83,9 @@ public class PredefinedProgramHandler(AppDbContext appDbContext) : IPredefinedPr
         {
             throw;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            LogToFile(ex);
             throw;
         }
     }

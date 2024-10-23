@@ -6,7 +6,7 @@ public class PredefinedProgramResponse
     {
     }
 
-    public PredefinedProgramResponse(Microwave.Core.Models.PredefinedProgram predefinedProgram)
+    public PredefinedProgramResponse(Models.PredefinedProgram predefinedProgram)
     {
         Id = predefinedProgram.Id;
         Name = predefinedProgram.Name;
@@ -14,6 +14,7 @@ public class PredefinedProgramResponse
         TimeSeconds = predefinedProgram.TimeSeconds;
         Power = predefinedProgram.Power;
         Instructions = predefinedProgram.Instructions;
+        IsPredefined = predefinedProgram.IsPredefined;
     }
 
     public Guid Id { get; set; }
@@ -22,4 +23,5 @@ public class PredefinedProgramResponse
     public int TimeSeconds { get; set; }
     public int Power { get; set; }
     public string? Instructions { get; set; }
+    public bool IsPredefined { get; set; }
 }

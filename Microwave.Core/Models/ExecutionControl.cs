@@ -17,11 +17,11 @@ public sealed class ExecutionControl
 
     private ExecutionControl()
     {
-        HarmStatus = EExecutionStatus.STOPPED;
+        HeatingStatus = EExecutionStatus.STOPPED;
     }
 
     const int DEFAULT_ADD_TIME = 30;
-    public EExecutionStatus HarmStatus { get; private set; }
+    public EExecutionStatus HeatingStatus { get; private set; }
     public int Power { get; private set; }
     public int TimeRemaining { get; private set; }
     public int TotalTime { get; private set; }
@@ -30,7 +30,7 @@ public sealed class ExecutionControl
 
     public async Task Start(StartRequest request, char? labelHeating = null)
     {
-        if (request.PredefinedProgramId.HasValue)
+        if (request.PredefinedProgramId.HasValue && HeatingStatus == EExecutionStatus.STOPPED)
         {
             IsPredefinedProgram = true;
             LabelHeating = labelHeating ?? '.';
@@ -38,21 +38,21 @@ public sealed class ExecutionControl
         else
             IsPredefinedProgram = false;
 
-        if (HarmStatus == EExecutionStatus.STOPPED)
+        if (HeatingStatus == EExecutionStatus.STOPPED)
         {
             TimeRemaining = request.Seconds;
             TotalTime = request.Seconds;
             Power = request.Power;
 
-            HarmStatus = EExecutionStatus.RUNNING;
+            HeatingStatus = EExecutionStatus.RUNNING;
             _ = StartHeating();
         }
-        else if (HarmStatus == EExecutionStatus.PAUSED)
+        else if (HeatingStatus == EExecutionStatus.PAUSED)
         {
-            HarmStatus = EExecutionStatus.RUNNING;
+            HeatingStatus = EExecutionStatus.RUNNING;
             _ = StartHeating();
         }
-        else if (HarmStatus == EExecutionStatus.RUNNING && !IsPredefinedProgram)
+        else if (HeatingStatus == EExecutionStatus.RUNNING && !IsPredefinedProgram)
         {
             TimeRemaining += DEFAULT_ADD_TIME;
             TotalTime += DEFAULT_ADD_TIME;
@@ -64,7 +64,7 @@ public sealed class ExecutionControl
     {
         if (!IsPredefinedProgram)
         {
-            HarmStatus = HarmStatus switch
+            HeatingStatus = HeatingStatus switch
             {
                 EExecutionStatus.RUNNING => EExecutionStatus.PAUSED,
                 EExecutionStatus.PAUSED => Reset(),
@@ -76,7 +76,7 @@ public sealed class ExecutionControl
     }
     private async Task StartHeating()
     {
-        while (HarmStatus == EExecutionStatus.RUNNING)
+        while (HeatingStatus == EExecutionStatus.RUNNING)
         {
             if (TimeRemaining > 0)
             {
@@ -84,7 +84,7 @@ public sealed class ExecutionControl
                 await Task.Delay(1000);
             }
             else
-                HarmStatus = EExecutionStatus.STOPPED;
+                HeatingStatus = EExecutionStatus.STOPPED;
         }
     }
     private EExecutionStatus Reset()
@@ -99,7 +99,7 @@ public sealed class ExecutionControl
     public ExecutionStatusResponse GetStatus()
     {
         var execStatus = new ExecutionStatusResponse(
-                executionStatus: HarmStatus,
+                executionStatus: HeatingStatus,
                 power: Power,
                 totalTime: TotalTime,
                 remainingTime: TimeRemaining,

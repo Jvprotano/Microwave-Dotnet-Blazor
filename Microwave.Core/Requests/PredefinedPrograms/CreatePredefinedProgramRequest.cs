@@ -5,6 +5,10 @@ namespace Microwave.Core.Requests.PredefinedPrograms;
 
 public class CreatePredefinedProgramRequest : BaseRequest
 {
+    public CreatePredefinedProgramRequest()
+    {
+    }
+
     public CreatePredefinedProgramRequest(string name, string food, int timeSeconds,
         int power, string labelHeating, string? instructions = null)
     {

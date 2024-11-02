@@ -116,12 +116,11 @@ Este projeto é uma aplicação completa de controle de um micro-ondas. Ele é c
 ## Testes
 
 Os testes unitários foram desenvolvidos utilizando o xUnit para garantir que a lógica de negócio está funcionando corretamente. 
-
 ---
 
 ## API Endpoints
 
-- **Com exceção dos endpoints de Registro e Login de usuário, todos os endpoints requerem autenticação**
+- **Com exceção dos endpoints de Registro e Login de usuário, todos os endpoints requerem autenticação.**
 
 ### Após inicializar a API, adicione a seguinte roda à URL para acessar o Swagger e obter informações dos endpoints
 
@@ -130,9 +129,12 @@ Os testes unitários foram desenvolvidos utilizando o xUnit para garantir que a 
 ## Autenticação
 
 A autenticação se dá através dos endpoints de registro e login e deverá ser feita utilizando o Bearer Token retornado pelo endpoint de login.
-Padrão para uso no Swagger: Bearer token
+Padrão para uso no Swagger: 
+   ```bash
+Bearer token
+   ```
 
-### O funcionamento do micro-ondas se dá através dos endpoints de /start e /pause-stop. 
+### O funcionamento do micro-ondas se dá através dos seguintes endpoints: 
 - `/v1/start` - Inicia o aquecimento usando os valores informados ou, caso informado o ID de um programa predefinido, usando os valores deste.
 
 - `/v1/pause-stop` - Caso o aquecimento esteja em execução, acionar este endpoint uma vez pausará a execução e, em uma segunda vez, parará limpando os dados.
@@ -145,9 +147,3 @@ Padrão para uso no Swagger: Bearer token
 
 - `/v1/predefined-programs/custom-programs` - Permite criar novos programas pré-definidos.
 
-
-
-
-
-Estes acionam ações em uma classe singleton e a execução pode ser acompanhada através 
----
